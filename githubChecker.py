@@ -3,6 +3,7 @@ from selenium import webdriver
 import unittest
 import httplib2
 
+
 class GithubChecker(unittest.TestCase):
     def setUp(self):
         # creates a new chrome session
