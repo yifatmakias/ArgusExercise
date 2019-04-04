@@ -3,7 +3,6 @@ from selenium import webdriver
 import unittest
 import httplib2
 
-
 class GithubChecker(unittest.TestCase):
     def setUp(self):
         # creates a new chrome session
@@ -11,6 +10,7 @@ class GithubChecker(unittest.TestCase):
 
     def test_github(self):
         driver = self.driver
+
         # Go to github.com
         driver.get("https://www.github.com")
 
@@ -18,6 +18,12 @@ class GithubChecker(unittest.TestCase):
         search_element = driver.find_element_by_name("q")
         search_element.send_keys("selenium")
         search_element.submit()
+        navigation_start = driver.execute_script("return window.performance.timing.navigationStart")
+        response_start = driver.execute_script("return window.performance.timing.responseStart")
+        dom_complete = driver.execute_script("return window.performance.timing.domComplete")
+
+        backend_performance = response_start - navigation_start
+        frontend_performance = dom_complete - response_start
 
         # Analise results
         result_list = self.driver.find_element_by_class_name("repo-list")
@@ -44,6 +50,8 @@ class GithubChecker(unittest.TestCase):
             print("Stars: " + stars)
             print("\n")
             counter = counter + 1
+
+        # Check links validation.
         for item in items:
             title_element = item.find_element_by_tag_name("h3")
             link = title_element.find_element_by_tag_name("a")
@@ -51,6 +59,12 @@ class GithubChecker(unittest.TestCase):
             h = httplib2.Http()
             resp = h.request(href, 'HEAD')
             assert int(resp[0]['status']) < 400
+        print("All links are valid")
+
+        # Time performance
+        print("Performance time:")
+        print("Back End: %s ms" % backend_performance)
+        print("Front End: %s ms" % frontend_performance)
 
     def tearDown(self):
         self.driver.quit()
