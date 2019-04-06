@@ -1,7 +1,7 @@
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 import unittest
-import httplib2
+import requests as req
 
 
 class GithubChecker(unittest.TestCase):
@@ -14,6 +14,7 @@ class GithubChecker(unittest.TestCase):
 
         # Go to github.com
         driver.get("https://www.github.com")
+        driver.maximize_window()
 
         # Search selenium
         search_element = driver.find_element_by_name("q")
@@ -57,9 +58,8 @@ class GithubChecker(unittest.TestCase):
             title_element = item.find_element_by_tag_name("h3")
             link = title_element.find_element_by_tag_name("a")
             href = link.get_attribute("href")
-            h = httplib2.Http()
-            resp = h.request(href, 'HEAD')
-            assert int(resp[0]['status']) < 400
+            resp = req.get(href)
+            assert int(resp.status_code) < 400
         print("All links are valid")
 
         # Time performance
