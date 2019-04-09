@@ -62,20 +62,11 @@ class GithubChecker(unittest.TestCase):
             language_xpath = '//*[@id="js-pjax-container"]/div/div[3]/div/ul/li['+str(counter)+']/div[2]/div[1]'
             language = item.find_element_by_xpath(language_xpath).text
             stars = item.find_element_by_class_name("muted-link").text
-            tags_text =''
             for tag in tags:
-                tags_text = tags_text + ", " + tag.text
+                tags_text = tag.text.replace('\n', ',')
             conn.cursor().execute("insert ignore into search_results (ID, title, description, tags, time, language, stars) values (%s, %s, %s, %s, %s, %s, %s);", (str(counter), title, description, tags_text, time_text, language, stars))
-            print("Title: " + title)
-            print("Description: " + description)
-            print("Tags: ")
-            for tag in tags:
-                print(tag.text)
-            print("Time: updated " + time_text)
-            print("Language: " + language)
-            print("Stars: " + stars)
-            print("\n")
             counter = counter + 1
+        print("Elements data Entered the database successfully\n")
 
         # Check links validation.
         for item in items:

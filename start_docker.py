@@ -1,6 +1,10 @@
 #!/usr/local/bin/python3
 
-import sys, os, os.path, time, subprocess
+import sys
+import os
+import os.path
+import time
+import subprocess
 
 kStatusRunning = "running"
 kStatusExited = "exited"
